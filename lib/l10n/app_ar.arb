@@ -1,0 +1,26 @@
+{
+  "@@locale": "ar",
+  "appTitle": "متجر الكتب",
+
+  "loginTitle": "تسجيل الدخول",
+  "signupTitle": "إنشاء حساب",
+
+  "emailHint": "البريد الإلكتروني",
+  "passwordHint": "كلمة المرور",
+  "confirmPasswordHint": "تأكيد كلمة المرور",
+
+  "noAccount": "ليس لديك حساب!",
+  "haveAccount": "لديك حساب بالفعل!",
+
+  "detailsTitle": "تفاصيل الكتاب",
+  "author": "المؤلف",
+  "description": "الوصف",
+  "publisher": "الناشر",
+  "published": "تاريخ النشر",
+  "language": "اللغة",
+  "bookId": "رقم الكتاب",
+
+  "unknown": "غير معروف",
+  "general": "عام",
+  "favoritesTitle": "مفضلاتي"
+}

@@ -1,0 +1,26 @@
+{
+  "@@locale": "en",
+ "appTitle": "BOOK STORE",
+
+  "loginTitle": "Login",
+  "signupTitle": "Sign Up",
+
+  "emailHint": "Email",
+  "passwordHint": "Password",
+  "confirmPasswordHint": "Confirm Password",
+
+  "noAccount": "You don't have an account!",
+  "haveAccount": "You already have an account!",
+
+  "detailsTitle": "Book Details",
+  "author": "Author",
+  "description": "Description",
+  "publisher": "Publisher",
+  "published": "Published",
+  "language": "Language",
+  "bookId": "Book ID",
+
+  "unknown": "Unknown",
+  "general": "General",
+  "favoritesTitle": "My Favorites"
+}
