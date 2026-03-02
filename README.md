@@ -1,24 +1,33 @@
-# book_store
+📚 Book Store App – Bloc & Cubit Edition
+Overview
+This repository contains an educational Flutter Book Store application built to explore and implement Bloc and Cubit for state management.
+The project is based on a previous version that used Riverpod. In this edition, the core logic and architecture are being refactored to replace Riverpod with Bloc and Cubit, allowing a deeper understanding of event-driven state management and unidirectional data flow.
 
-A new Flutter project.
+🎯 Purpose of This Project
+This is an educational project created to:
+* Practice implementing Bloc and Cubit in a real-world app structure
+* Compare different state management approaches (Riverpod vs Bloc)
+* Improve architectural decisions and code organization
+* Strengthen understanding of scalable Flutter architecture
+The UI and general structure are reused from the previous version, but the state management layer is being completely redesigned using Bloc and Cubit.
 
+🏗 Architecture Focus
+* Feature-based structure
+* Clear separation of concerns
+* Predictable state transitions
+* Unidirectional data flow
+* Improved testability
 
-📱 Store App (Flutter Learning Project)
-This project is a Flutter-based Store application created for learning and practice purposes.
-The app focuses on understanding Flutter fundamentals and common app patterns, including UI building, navigation, state management concepts, and basic project structure. It is designed as a hands-on experiment rather than a production-ready application.
+🔄 Migration Context
+This project reuses the source code from the earlier Book Store app, replacing:
+Riverpod ➝ Bloc / Cubit
+The goal is not just to swap libraries, but to understand the architectural and philosophical differences between the two approaches.
 
-✨ What this project demonstrates
-* Building UIs using Flutter widgets
-* Organizing a Flutter project in a clean and readable way
-* Working with assets such as icons, splash screens, and custom fonts
-* Authentication
-* Structured code + simple Riverpod Provider for state management.
+🚀 Tech Stack
+* Flutter
+* Dart
+* Bloc
+* Cubit
 
-🎯 Purpose
-This repository is intended for:
-* Practicing Flutter development
-* Experimenting with layouts and UI components
-* Learning how to structure real-world Flutter apps
-* Trying out packages and Flutter tooling in a safe environment
-
-⚠️ This app is for educational purposes only and may not include full functionality, backend integration, or production-level optimizations.
+📌 Status
+Work in progress — this repository is actively being refactored and improved as part of the learning process.
