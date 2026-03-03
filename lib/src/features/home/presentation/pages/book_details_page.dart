@@ -25,8 +25,6 @@ class BookDetailsPage extends StatelessWidget {
                 onBackPressed: () {
                   Navigator.pop(context, BookListingPage.id);
                 },
-
-                //icon: Icons.bookmark,
                 onPress: () {
                   Navigator.pushNamed(context, FavoriteBooksPage.id);
                 },

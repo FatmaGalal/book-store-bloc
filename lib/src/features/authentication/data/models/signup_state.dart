@@ -1,19 +1,19 @@
-class SignUpState {
-  final String email;
-  final String password;
-  final String confirmPassword;
+// class SignUpState {
+//   final String email;
+//   final String password;
+//   final String confirmPassword;
 
-  const SignUpState({
-     this.email='',
-     this.password='',
-     this.confirmPassword='',
-  });
+//   const SignUpState({
+//      this.email='',
+//      this.password='',
+//      this.confirmPassword='',
+//   });
 
-  SignUpState copyWith({ String? email, String? password, String? confirmPassword}) {
-    return SignUpState(
-      email: email ?? this.email,
-      password: password ?? this.password,
-      confirmPassword: confirmPassword ?? this.confirmPassword,
-    );
-  }
-}
+//   SignUpState copyWith({ String? email, String? password, String? confirmPassword}) {
+//     return SignUpState(
+//       email: email ?? this.email,
+//       password: password ?? this.password,
+//       confirmPassword: confirmPassword ?? this.confirmPassword,
+//     );
+//   }
+// }

@@ -1,13 +1,11 @@
 import 'package:book_store/l10n/app_localizations.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/core/helpers/init_hive.dart';
-import 'package:book_store/src/core/providers/locale_provider.dart';
 import 'package:book_store/src/features/authentication/presentation/pages/signup_page.dart';
 import 'package:book_store/src/features/home/presentation/pages/book_details_page.dart';
 import 'package:book_store/src/features/home/presentation/pages/book_listing_page.dart';
 import 'package:book_store/src/features/home/presentation/pages/favorite_books_page.dart';
 import 'package:book_store/src/features/authentication/presentation/pages/login_page.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -18,19 +16,18 @@ void main() async {
   await initHive();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(ProviderScope(child: BookStoreApp()));
+  runApp(BookStoreApp());
 }
 
-class BookStoreApp extends ConsumerWidget {
+class BookStoreApp extends StatelessWidget {
   const BookStoreApp({super.key});
 
-  // This widget is the root of your application.
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final locale = ref.watch(localeProvider);
+  Widget build(BuildContext context) {
+    //final locale = ref.watch(localeProvider);
 
     return MaterialApp(
-      locale: locale,
+      //locale: locale,
       supportedLocales: const [Locale('en'), Locale('ar')],
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -58,7 +55,7 @@ class BookStoreApp extends ConsumerWidget {
         scaffoldBackgroundColor: kDarkBGColor,
       ),
       themeMode: ThemeMode.system,
-      home: LoginPage(),
+      home: BookListingPage(),
     );
   }
 }
