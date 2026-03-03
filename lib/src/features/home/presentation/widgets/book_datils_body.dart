@@ -5,16 +5,15 @@ import 'package:book_store/src/features/home/domain/entities/book_entity.dart';
 import 'package:book_store/src/features/home/presentation/widgets/book_details_info_row.dart';
 import 'package:book_store/src/features/home/presentation/widgets/favorite_icon_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BookDatilsBody extends ConsumerStatefulWidget {
+class BookDatilsBody extends StatefulWidget {
   const BookDatilsBody({super.key});
 
   @override
-  ConsumerState<BookDatilsBody> createState() => _BookDatilsBodyState();
+  State<BookDatilsBody> createState() => _BookDatilsBodyState();
 }
 
-class _BookDatilsBodyState extends ConsumerState<BookDatilsBody> {
+class _BookDatilsBodyState extends State<BookDatilsBody> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

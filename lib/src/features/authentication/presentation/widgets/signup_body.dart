@@ -1,55 +1,37 @@
 import 'package:book_store/l10n/app_localizations.dart';
 import 'package:book_store/src/core/components/custom_button.dart';
 import 'package:book_store/src/core/components/language_switch_button.dart';
-import 'package:book_store/src/features/authentication/domain/firebase_auth_errors.dart';
-import 'package:book_store/src/features/authentication/presentation/providers/signup_provider.dart';
 import 'package:book_store/src/features/authentication/presentation/widgets/custom_form_textfield.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/core/utils/assets_data.dart';
-import 'package:book_store/src/core/helpers/show_snak_bar_message.dart';
 import 'package:book_store/src/features/authentication/presentation/pages/login_page.dart';
-import 'package:book_store/src/features/home/presentation/pages/book_listing_page.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-class SignUpBody extends ConsumerStatefulWidget {
+class SignUpBody extends StatefulWidget {
   const SignUpBody({super.key});
 
   @override
-  ConsumerState<SignUpBody> createState() => _SignUpBodyState();
+  State<SignUpBody> createState() => _SignUpBodyState();
 }
 
-class _SignUpBodyState extends ConsumerState<SignUpBody> {
+class _SignUpBodyState extends State<SignUpBody> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    final provider = ref.watch(signUpProvider);
     final t = AppLocalizations.of(context)!;
-    ref.listen(signUpProvider, (previous, next) {
-      next.whenOrNull(
-        data: (data) {
-          Navigator.pushReplacementNamed(context, BookListingPage.id);
-        },
-        error: (ex, st) {
-          if (ex is FirebaseAuthException) {
-            showMessage(context, firebaseAuthError(ex));
-          }
-        },
-      );
-    });
 
     return ModalProgressHUD(
-      inAsyncCall: provider.isLoading,
+      inAsyncCall: true,
       progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
       child: Stack(
         children: [
           PositionedDirectional(
             top: 12,
             end: 12,
-            child: LanguageSwitchButton()),
+            child: LanguageSwitchButton(),
+          ),
           Padding(
             padding: const EdgeInsets.all(20),
             child: Center(
@@ -71,11 +53,8 @@ class _SignUpBodyState extends ConsumerState<SignUpBody> {
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
                         textFieldHint: t.emailHint,
-                        onChanged: (data) {
-                          ref.read(signUpProvider.notifier).updateEmail(data);
-                        },
-                        validator: (email) =>
-                            ref.read(signUpProvider.notifier).emailError,
+                        onChanged: (data) {},
+                        validator: (email) {},
                       ),
 
                       SizedBox(height: 12),
@@ -83,14 +62,9 @@ class _SignUpBodyState extends ConsumerState<SignUpBody> {
                       CustomFormTextfield(
                         textFieldHint: t.passwordHint,
                         textInputAction: TextInputAction.next,
-                        onChanged: (data) {
-                          ref
-                              .read(signUpProvider.notifier)
-                              .updatePassword(data);
-                        },
+                        onChanged: (data) {},
                         obscureText: true,
-                        validator: (password) =>
-                            ref.read(signUpProvider.notifier).passwordError,
+                        validator: (password) {},
                       ),
 
                       SizedBox(height: 12),
@@ -98,16 +72,10 @@ class _SignUpBodyState extends ConsumerState<SignUpBody> {
                       CustomFormTextfield(
                         textFieldHint: t.confirmPasswordHint,
                         textInputAction: TextInputAction.done,
-                        onChanged: (data) {
-                          ref
-                              .read(signUpProvider.notifier)
-                              .updateConfirmPassword(data);
-                        },
+                        onChanged: (data) {},
 
                         obscureText: true,
-                        validator: (confirmPassword) => ref
-                            .read(signUpProvider.notifier)
-                            .confirmPasswordError,
+                        validator: (confirmPassword) {},
                       ),
 
                       SizedBox(height: 24),
@@ -116,9 +84,7 @@ class _SignUpBodyState extends ConsumerState<SignUpBody> {
                         buttonText: t.signupTitle,
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
-                            await ref
-                                .read(signUpProvider.notifier)
-                                .registerNewUser();
+                           //TODO: Call SignUp Page
                           }
                         },
                       ),
