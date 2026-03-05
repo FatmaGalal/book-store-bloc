@@ -61,4 +61,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get favoritesTitle => 'My Favorites';
+
+  @override
+  String get nobooksfound => 'No books found';
 }
