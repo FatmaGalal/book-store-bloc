@@ -205,6 +205,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'My Favorites'**
   String get favoritesTitle;
+
+  /// No description provided for @nobooksfound.
+  ///
+  /// In en, this message translates to:
+  /// **'No books found'**
+  String get nobooksfound;
 }
 
 class _AppLocalizationsDelegate
