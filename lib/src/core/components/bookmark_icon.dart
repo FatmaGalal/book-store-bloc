@@ -9,27 +9,26 @@ class BookmarkIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final favorites = context
-        .read<FavoritesBooksCubit>()
-        .loadFavoriteBooks()
-        .toList();
+    return BlocBuilder<FavoritesBooksCubit, FavoritesBooksState>(
+      builder: (context, state) {
+        final favorites = (state is FavoritesBooksLoaded)
+            ? state.favoriteBooks
+            : [];
 
-    if (favorites.isNotEmpty) {
-      return BlocBuilder<FavoritesBooksCubit, FavoritesBooksState>(
-        builder: (context, state) {
+        if (favorites.isNotEmpty) {
           return IconButton(
             onPressed: () {
               Navigator.pushNamed(context, FavoriteBooksPage.id);
             },
             icon: Icon(Icons.bookmark, color: kPrimaryColor, size: 35),
           );
-        },
-      );
-    } else {
-      return IconButton(
-        onPressed: () {},
-        icon: Icon(Icons.bookmark, color: kIconDimmedColor1, size: 35),
-      );
-    }
+        } else {
+          return IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.bookmark, color: kIconDimmedColor1, size: 35),
+          );
+        }
+      },
+    );
   }
 }

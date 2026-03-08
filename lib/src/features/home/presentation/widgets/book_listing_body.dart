@@ -14,7 +14,6 @@ class BookListingBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    setUpHomeService();
     final t = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.all(8.0),

@@ -1,3 +1,4 @@
+import 'package:book_store/l10n/app_localizations.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/features/home/presentation/cubits/favorites_books_cubits/favorites_books_cubit.dart';
 import 'package:book_store/src/features/home/presentation/widgets/custom_card.dart';
@@ -15,26 +16,32 @@ class FavoriteBookBody extends StatefulWidget {
 class _FavoriteBookBodyState extends State<FavoriteBookBody> {
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return BlocBuilder<FavoritesBooksCubit, FavoritesBooksState>(
       builder: (context, state) {
-        final favorites = context
-            .read<FavoritesBooksCubit>()
-            .loadFavoriteBooks()
-            .toList();
-        return ModalProgressHUD(
-          inAsyncCall: false,
-          progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
-          child: GridView.builder(
-            itemCount: favorites.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+        final favorites = (state is FavoritesBooksLoaded)
+            ? state.favoriteBooks
+            : [];
+        if (favorites.isEmpty) {
+          return Center(
+            child: Text(t.noFavoritesYet, style: const TextStyle(fontSize: 18)),
+          );
+        } else {
+          return ModalProgressHUD(
+            inAsyncCall: false,
+            progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
+            child: GridView.builder(
+              itemCount: favorites.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              itemBuilder: (context, index) {
+                final book = favorites[index];
+                return CustomCard(book: book);
+              },
             ),
-            itemBuilder: (context, index) {
-              final book = favorites[index];
-              return CustomCard(book: book);
-            },
-          ),
-        );
+          );
+        }
       },
     );
   }

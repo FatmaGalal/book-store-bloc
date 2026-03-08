@@ -9,3 +9,8 @@ final class FavoritesBooksLoaded extends FavoritesBooksState {
   final List<BookEntity> favoriteBooks;
   FavoritesBooksLoaded(this.favoriteBooks);
 }
+
+final class FavoritesBooksFailed extends FavoritesBooksState {
+  final String message;
+  FavoritesBooksFailed(this.message);
+}
