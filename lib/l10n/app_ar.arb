@@ -23,5 +23,6 @@
   "unknown": "غير معروف",
   "general": "عام",
   "favoritesTitle": "مفضلاتي",
-  "nobooksfound":"لا توجد كتب متاحة حالياً"
+  "nobooksfound":"لا توجد كتب متاحة حالياً",
+  "noFavoritesYet": "لا توجد كتب مفضلة بعد"
 }

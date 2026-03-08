@@ -23,5 +23,6 @@
   "unknown": "Unknown",
   "general": "General",
   "favoritesTitle": "My Favorites",
-  "nobooksfound":"No books found"
+  "nobooksfound":"No books found",
+  "noFavoritesYet": "No favorite books yet."
 }

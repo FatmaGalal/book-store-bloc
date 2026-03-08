@@ -12,7 +12,12 @@ class FavoritesBooksCubit extends Cubit<FavoritesBooksState> {
   }
 
   Box<BookEntity> get _box {
-    return Hive.box<BookEntity>(kfavoriteBooksBox);
+    try {
+      return Hive.box<BookEntity>(kfavoriteBooksBox);
+    } on Exception catch (e) {
+      emit(FavoritesBooksFailed('Failed to load favorites: ${e.toString()}'));
+      throw Exception('Hive box not initialized');
+    }
   }
 
   List<BookEntity> loadFavoriteBooks() {

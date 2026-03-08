@@ -7,13 +7,17 @@ import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
 void setUpHomeService() {
-  getIt.registerSingleton<ApiService>(ApiService(dio: Dio()));
-  getIt.registerSingleton<HomeRepoImpl>(
-    HomeRepoImpl(
-      homeLocalDataSource: HomeLocalDataSourceImpl(),
-      homeRemoteDataSource: HomeRemoteDataSourceImpl(
-        apiService: getIt.get<ApiService>(),
+  if (!getIt.isRegistered<ApiService>()) {
+    getIt.registerSingleton<ApiService>(ApiService(dio: Dio()));
+  }
+  if (!getIt.isRegistered<HomeRepoImpl>()) {
+    getIt.registerSingleton<HomeRepoImpl>(
+      HomeRepoImpl(
+        homeLocalDataSource: HomeLocalDataSourceImpl(),
+        homeRemoteDataSource: HomeRemoteDataSourceImpl(
+          apiService: getIt.get<ApiService>(),
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
