@@ -40,29 +40,13 @@ class _BooksListPageState extends State<BooksListView> {
   Widget _buildBooksContent(BooksListingState state, List<BookEntity> books) {
     final t = AppLocalizations.of(context)!;
     if (state is BooksListingFailure) {
-      return ListView(
-        children: [
-          SizedBox(
-            height: 400,
-            child: Center(
-              child: Text(state.errorMessage, textAlign: TextAlign.center),
-            ),
-          ),
-        ],
+      return Center(
+        child: Text(state.errorMessage, textAlign: TextAlign.center),
       );
     }
 
     if (state is BooksListingSuccess && books.isEmpty) {
-      return ListView(
-        children: [
-          SizedBox(
-            height: 400,
-            child: Center(
-              child: Text(t.nobooksfound, textAlign: TextAlign.center),
-            ),
-          ),
-        ],
-      );
+      return Center(child: Text(t.nobooksfound, textAlign: TextAlign.center));
     }
 
     return GridView.builder(
