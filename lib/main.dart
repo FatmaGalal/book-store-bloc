@@ -2,14 +2,8 @@ import 'package:book_store/l10n/app_localizations.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/core/cubits/locale_cubit/locale_cubit.dart';
 import 'package:book_store/src/core/helpers/init_hive.dart';
-import 'package:book_store/src/core/services/setup_home_service.dart';
+import 'package:book_store/src/core/services/setup_dependencies.dart';
 import 'package:book_store/src/features/authentication/presentation/pages/signup_page.dart';
-import 'package:book_store/src/features/home/data/repos/home_repo_impl.dart';
-import 'package:book_store/src/features/home/domain/use_cases/fetch_book_list_use_case.dart';
-import 'package:book_store/src/features/home/presentation/cubits/books_listing_cubits/books_listing_cubit.dart';
-import 'package:book_store/src/features/home/data/repos/home_repo_impl.dart';
-import 'package:book_store/src/features/home/domain/use_cases/fetch_book_list_use_case.dart';
-import 'package:book_store/src/features/home/presentation/cubits/books_listing_cubits/books_listing_cubit.dart';
 import 'package:book_store/src/features/home/presentation/cubits/favorites_books_cubits/favorites_books_cubit.dart';
 import 'package:book_store/src/features/home/presentation/pages/book_details_page.dart';
 import 'package:book_store/src/features/home/presentation/pages/book_listing_page.dart';
@@ -25,7 +19,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initHive();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  setUpHomeService();
+  setUpDependencies();
   runApp(BookStoreApp());
 }
 
@@ -37,11 +31,6 @@ class BookStoreApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => FavoritesBooksCubit()),
-        BlocProvider(
-          create: (context) => BooksListingCubit(
-            FetchBookListUseCase(homeRepo: getIt.get<HomeRepoImpl>()),
-          ),
-        ),
         BlocProvider(create: (context) => LocaleCubit()),
       ],
       child: BlocBuilder<LocaleCubit, LocaleState>(
@@ -75,7 +64,7 @@ class BookStoreApp extends StatelessWidget {
               scaffoldBackgroundColor: kDarkBGColor,
             ),
             themeMode: ThemeMode.system,
-            home: BookListingPage(),
+            home: LoginPage(),
           );
         },
       ),
