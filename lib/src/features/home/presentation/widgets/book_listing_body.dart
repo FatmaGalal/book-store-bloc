@@ -1,6 +1,6 @@
 import 'package:book_store/l10n/app_localizations.dart';
 import 'package:book_store/src/core/components/custom_app_bar.dart';
-import 'package:book_store/src/features/home/data/data_sources/setup_home_service.dart';
+import 'package:book_store/src/core/services/setup_home_service.dart';
 import 'package:book_store/src/features/home/data/repos/home_repo_impl.dart';
 import 'package:book_store/src/features/home/domain/use_cases/fetch_book_list_use_case.dart';
 import 'package:book_store/src/features/home/presentation/cubits/books_listing_cubits/books_listing_cubit.dart';

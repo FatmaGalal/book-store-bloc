@@ -1,5 +1,7 @@
 import 'package:book_store/src/core/constants/constants.dart';
+import 'package:book_store/src/core/cubits/locale_cubit/locale_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LanguageSwitchButton extends StatelessWidget {
   const LanguageSwitchButton({super.key});
@@ -17,7 +19,9 @@ class LanguageSwitchButton extends StatelessWidget {
       ),
       child: PopupMenuButton<Locale>(
         icon: const Icon(Icons.language, color: kPrimaryColor),
-        onSelected: (Locale locale) {},
+        onSelected: (Locale locale) {
+          context.read<LocaleCubit>().setLocale(locale);
+        },
         color: isDark ? kIconDimmedColor1 : kLightBGColor,
         itemBuilder: (context) {
           return [
