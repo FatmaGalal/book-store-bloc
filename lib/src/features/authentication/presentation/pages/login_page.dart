@@ -13,7 +13,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LoginCubit(getIt.get<AuthService>()),
+      create: (context) => LoginCubit(getIt<AuthService>()),
       child: Scaffold(body: SafeArea(child: LoginBody())),
     );
   }

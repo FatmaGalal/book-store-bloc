@@ -16,7 +16,7 @@ class CustomFormTextfield extends StatelessWidget {
 
   final String textFieldHint;
   final Key? formFieldKey;
-  final Function(String)? onChanged;
+  final ValueChanged<String>? onChanged;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final bool obscureText;
@@ -25,8 +25,7 @@ class CustomFormTextfield extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-    OutlineInputBorder outlineInputBorder = OutlineInputBorder(
+    final OutlineInputBorder outlineInputBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
       borderSide: BorderSide(color: kPrimaryColor),
     );
