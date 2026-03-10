@@ -1,6 +1,7 @@
 import 'package:book_store/l10n/app_localizations.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/core/helpers/init_hive.dart';
+import 'package:book_store/src/core/services/setup_dependencies.dart';
 import 'package:book_store/src/features/authentication/presentation/pages/signup_page.dart';
 import 'package:book_store/src/features/home/presentation/pages/book_details_page.dart';
 import 'package:book_store/src/features/home/presentation/pages/book_listing_page.dart';
@@ -15,7 +16,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initHive();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  setUpDependencies();
   runApp(BookStoreApp());
 }
 
