@@ -21,56 +21,36 @@ class _BooksListPageState extends State<BooksListView> {
           return Center(child: Text(state.errorMessage));
         }
 
-        // if (state is BooksListingLoading) {
-        //   return ModalProgressHUD(
-        //     inAsyncCall: true,
-        //     progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
-        //     child: Container(),
-        //   );
-        // }
+        if (state is BooksListingLoading) {
+          return ModalProgressHUD(
+            inAsyncCall: true,
+            progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
+            child: Container(),
+          );
+        }
 
         if (state is BooksListingLoaded) {
-          return ModalProgressHUD(
-            inAsyncCall: state is BooksListingLoading,
-            child: RefreshIndicator(
-              color: kPrimaryColor,
-              onRefresh: () async {
-                context.read<BooksListingBloc>().add(FetchBooksListing());
-              },
-              child: GridView.builder(
-                itemCount: state.books.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                ),
-                itemBuilder: (context, index) {
-                  final book = state.books[index];
-
-                  return CustomCard(book: book);
-                },
+          return RefreshIndicator(
+            color: kPrimaryColor,
+            onRefresh: () async {
+              context.read<BooksListingBloc>().add(
+                FetchBooksListing(forceRefresh: true),
+              );
+            },
+            child: GridView.builder(
+              itemCount: state.books.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
               ),
+              itemBuilder: (context, index) {
+                final book = state.books[index];
+
+                return CustomCard(book: book);
+              },
             ),
           );
         }
         return const SizedBox.shrink();
-        // return ModalProgressHUD(
-        //   inAsyncCall: false,
-        //   progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
-        //   child: RefreshIndicator(
-        //     color: kPrimaryColor,
-        //     onRefresh: () async {},
-        //     child: GridView.builder(
-        //       //itemCount: state.books.length,
-        //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        //         crossAxisCount: 2,
-        //       ),
-        //       itemBuilder: (context, index) {
-        //         //final book = state.books[index];
-
-        //         // return CustomCard(book: book);
-        //       },
-        //     ),
-        //   ),
-        // );
       },
     );
   }

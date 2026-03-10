@@ -19,14 +19,12 @@ class BooksListingBloc extends Bloc<BooksListingEvent, BooksListingState> {
     BooksListingEvent event,
     Emitter<BooksListingState> emit,
   ) async {
-    // if (event is FetchBooksListing) {
+    if (event is! FetchBooksListing) return;
     emit(BooksListingLoading());
-    final result = await fetchBookListUseCase();
+    final result = await fetchBookListUseCase(event.forceRefresh);
     result.fold(
       (failure) => emit(BooksListingFailure(errorMessage: failure.message)),
       (books) => emit(BooksListingLoaded(books: books)),
     );
   }
-
-  //}
 }

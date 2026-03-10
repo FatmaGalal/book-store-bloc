@@ -25,12 +25,13 @@ class BookListingBody extends StatelessWidget {
               Navigator.pushNamed(context, FavoriteBooksPage.id);
             },
           ),
-
-          BlocProvider(
-            create: (context) => BooksListingBloc(
-              fetchBookListUseCase: getIt<FetchBookListUseCase>(),
-            )..add(FetchBooksListing()),
-            child: Expanded(child: BooksListView()),
+          Expanded(
+            child: BlocProvider(
+              create: (context) => BooksListingBloc(
+                fetchBookListUseCase: getIt<FetchBookListUseCase>(),
+              )..add(FetchBooksListing()),
+              child: BooksListView(),
+            ),
           ),
         ],
       ),
