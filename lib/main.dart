@@ -32,7 +32,7 @@ class BookStoreApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<FavoritesBloc>(
-          create: (context) => FavoritesBloc()..add(LoadFavorites()),
+          create: (context) => getIt.get<FavoritesBloc>()..add(LoadFavorites()),
         ),
       ],
 

@@ -30,23 +30,27 @@ class _BooksListPageState extends State<BooksListView> {
         }
 
         if (state is BooksListingLoaded) {
-          return RefreshIndicator(
-            color: kPrimaryColor,
-            onRefresh: () async {
-              context.read<BooksListingBloc>().add(
-                FetchBooksListing(forceRefresh: true),
-              );
-            },
-            child: GridView.builder(
-              itemCount: state.books.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-              ),
-              itemBuilder: (context, index) {
-                final book = state.books[index];
-
-                return CustomCard(book: book);
+          return ModalProgressHUD(
+            inAsyncCall: state.isRefreshing,
+            progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
+            child: RefreshIndicator(
+              color: kPrimaryColor,
+              onRefresh: () async {
+                context.read<BooksListingBloc>().add(
+                  FetchBooksListing(forceRefresh: true),
+                );
               },
+              child: GridView.builder(
+                itemCount: state.books.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                ),
+                itemBuilder: (context, index) {
+                  final book = state.books[index];
+
+                  return CustomCard(book: book);
+                },
+              ),
             ),
           );
         }

@@ -14,3 +14,9 @@ final class FavoritesBooksLoaded extends FavoritesState {
     return favorites.any((book) => book.bookId == bookId);
   }
 }
+
+final class FavoritesFailure extends FavoritesState {
+  final String errorMessage;
+
+  FavoritesFailure({required this.errorMessage});
+}
