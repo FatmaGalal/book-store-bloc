@@ -30,47 +30,57 @@ class BookStoreApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<LocaleBloc>(create: (context) => LocaleBloc()),
+        BlocProvider<LocaleBloc>(create: (_) => LocaleBloc()),
         BlocProvider<FavoritesBloc>(
-          create: (context) => FavoritesBloc()..add(LoadFavorites()),
+          create: (_) => FavoritesBloc()..add(LoadFavorites()),
+          // TODO: Replacewith getIt after merge
+          //create: (_) => getIt.get<FavoritesBloc>()..add(LoadFavorites()),
         ),
       ],
+      child: const AppView(),
+    );
+  }
+}
 
-      child: BlocBuilder<LocaleBloc, LocaleState>(
-        builder: (context, state) {
-          return MaterialApp(
-            locale: state is LocaleLoaded ? state.locale : const Locale('en'),
-            supportedLocales: const [Locale('en'), Locale('ar')],
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            routes: {
-              SignUpPage.id: (context) => SignUpPage(),
-              LoginPage.id: (context) => LoginPage(),
-              BookListingPage.id: (context) => BookListingPage(),
-              BookDetailsPage.id: (context) => BookDetailsPage(),
-              FavoriteBooksPage.id: (context) => FavoriteBooksPage(),
-            },
-            debugShowCheckedModeBanner: false,
-            title: 'Book Store',
-            theme: ThemeData(
-              brightness: Brightness.light,
-              fontFamily: 'Montserrat',
-              scaffoldBackgroundColor: kLightBGColor,
-            ),
-            darkTheme: ThemeData(
-              brightness: Brightness.dark,
-              fontFamily: 'Montserrat',
-              scaffoldBackgroundColor: kDarkBGColor,
-            ),
-            themeMode: ThemeMode.system,
-            home: BookListingPage(),
-          );
-        },
-      ),
+class AppView extends StatelessWidget {
+  const AppView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LocaleBloc, LocaleState>(
+      builder: (context, state) {
+        return MaterialApp(
+          locale: state is LocaleLoaded ? state.locale : null,
+          supportedLocales: const [Locale('en'), Locale('ar')],
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          debugShowCheckedModeBanner: false,
+          title: 'Book Store',
+          theme: ThemeData(
+            brightness: Brightness.light,
+            fontFamily: 'Montserrat',
+            scaffoldBackgroundColor: kLightBGColor,
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            fontFamily: 'Montserrat',
+            scaffoldBackgroundColor: kDarkBGColor,
+          ),
+          themeMode: ThemeMode.system,
+          routes: {
+            SignUpPage.id: (_) => const SignUpPage(),
+            LoginPage.id: (_) => const LoginPage(),
+            BookListingPage.id: (_) => const BookListingPage(),
+            BookDetailsPage.id: (_) => const BookDetailsPage(),
+            FavoriteBooksPage.id: (_) => const FavoriteBooksPage(),
+          },
+          home: const BookListingPage(),
+        );
+      },
     );
   }
 }
