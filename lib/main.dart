@@ -32,7 +32,7 @@ class BookStoreApp extends StatelessWidget {
       providers: [
         BlocProvider<LocaleBloc>(create: (_) => LocaleBloc()),
         BlocProvider<FavoritesBloc>(
-          create: (context) => getIt.get<FavoritesBloc>()..add(LoadFavorites()),
+          create: (_) => getIt.get<FavoritesBloc>()..add(LoadFavorites()),
         ),
       ],
       child: const AppView(),
