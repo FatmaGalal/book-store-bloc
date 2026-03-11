@@ -93,7 +93,6 @@ class _SignUpBodyState extends State<SignUpBody> {
                             controller: passwordController,
                             textFieldHint: t.passwordHint,
                             textInputAction: TextInputAction.next,
-                            onChanged: (data) {},
                             obscureText: true,
                             validator: (password) {
                               return Validators.password(password);
@@ -106,8 +105,6 @@ class _SignUpBodyState extends State<SignUpBody> {
                             controller: confirmPasswordController,
                             textFieldHint: t.confirmPasswordHint,
                             textInputAction: TextInputAction.done,
-                            onChanged: (data) {},
-
                             obscureText: true,
                             validator: (confirmPassword) {
                               return Validators.confirmPassword(
@@ -118,7 +115,6 @@ class _SignUpBodyState extends State<SignUpBody> {
                           ),
 
                           SizedBox(height: 24),
-
                           CustomButton(
                             buttonText: t.signupTitle,
                             onTap: () async {

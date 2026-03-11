@@ -36,8 +36,6 @@ class BookStoreApp extends StatelessWidget {
         BlocProvider<FavoritesBloc>(
           create: (_) => getIt.get<FavoritesBloc>()..add(LoadFavorites()),
         ),
-        BlocProvider(create: (_) => LoginBloc()),
-        BlocProvider(create: (_) => SignupBloc()),
       ],
       child: const AppView(),
     );
