@@ -1,4 +1,5 @@
 import 'package:book_store/l10n/app_localizations.dart';
+import 'package:book_store/src/core/blocs/bloc/locale_bloc.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/core/helpers/init_hive.dart';
 import 'package:book_store/src/core/services/setup_dependencies.dart';
@@ -31,41 +32,46 @@ class BookStoreApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
+        BlocProvider<LocaleBloc>(create: (context) => LocaleBloc()),
         BlocProvider<FavoritesBloc>(
           create: (context) => FavoritesBloc()..add(LoadFavorites()),
         ),
       ],
 
-      child: MaterialApp(
-        //locale: locale,
-        supportedLocales: const [Locale('en'), Locale('ar')],
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        routes: {
-          SignUpPage.id: (context) => SignUpPage(),
-          LoginPage.id: (context) => LoginPage(),
-          BookListingPage.id: (context) => BookListingPage(),
-          BookDetailsPage.id: (context) => BookDetailsPage(),
-          FavoriteBooksPage.id: (context) => FavoriteBooksPage(),
+      child: BlocBuilder<LocaleBloc, LocaleState>(
+        builder: (context, state) {
+          return MaterialApp(
+            locale: state is LocaleSwitched ? state.locale : const Locale('en'),
+            supportedLocales: const [Locale('en'), Locale('ar')],
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            routes: {
+              SignUpPage.id: (context) => SignUpPage(),
+              LoginPage.id: (context) => LoginPage(),
+              BookListingPage.id: (context) => BookListingPage(),
+              BookDetailsPage.id: (context) => BookDetailsPage(),
+              FavoriteBooksPage.id: (context) => FavoriteBooksPage(),
+            },
+            debugShowCheckedModeBanner: false,
+            title: 'Book Store',
+            theme: ThemeData(
+              brightness: Brightness.light,
+              fontFamily: 'Montserrat',
+              scaffoldBackgroundColor: kLightBGColor,
+            ),
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+              fontFamily: 'Montserrat',
+              scaffoldBackgroundColor: kDarkBGColor,
+            ),
+            themeMode: ThemeMode.system,
+            home: BookListingPage(),
+          );
         },
-        debugShowCheckedModeBanner: false,
-        title: 'Book Store',
-        theme: ThemeData(
-          brightness: Brightness.light,
-          fontFamily: 'Montserrat',
-          scaffoldBackgroundColor: kLightBGColor,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          fontFamily: 'Montserrat',
-          scaffoldBackgroundColor: kDarkBGColor,
-        ),
-        themeMode: ThemeMode.system,
-        home: BookListingPage(),
       ),
     );
   }

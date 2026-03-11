@@ -61,4 +61,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get favoritesTitle => 'مفضلاتي';
+
+  @override
+  String get nobooksfound => 'لا توجد كتب متاحة حالياً';
+
+  @override
+  String get noFavoritesYet => 'لا توجد كتب مفضلة بعد';
 }
