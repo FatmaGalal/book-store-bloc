@@ -32,9 +32,6 @@ class BookStoreApp extends StatelessWidget {
       providers: [
         BlocProvider<LocaleBloc>(create: (_) => LocaleBloc()),
         BlocProvider<FavoritesBloc>(
-          create: (_) => FavoritesBloc()..add(LoadFavorites()),
-          // TODO: Replacewith getIt after merge
-          //create: (_) => getIt.get<FavoritesBloc>()..add(LoadFavorites()),
           create: (context) => getIt.get<FavoritesBloc>()..add(LoadFavorites()),
         ),
       ],
