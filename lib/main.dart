@@ -1,4 +1,5 @@
 import 'package:book_store/l10n/app_localizations.dart';
+import 'package:book_store/src/core/blocs/bloc/locale_bloc.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/core/helpers/init_hive.dart';
 import 'package:book_store/src/core/services/setup_dependencies.dart';
@@ -27,46 +28,60 @@ class BookStoreApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final locale = ref.watch(localeProvider);
-
     return MultiBlocProvider(
       providers: [
+        BlocProvider<LocaleBloc>(create: (_) => LocaleBloc()),
         BlocProvider<FavoritesBloc>(
+          create: (_) => FavoritesBloc()..add(LoadFavorites()),
+          // TODO: Replacewith getIt after merge
+          //create: (_) => getIt.get<FavoritesBloc>()..add(LoadFavorites()),
           create: (context) => getIt.get<FavoritesBloc>()..add(LoadFavorites()),
         ),
       ],
+      child: const AppView(),
+    );
+  }
+}
 
-      child: MaterialApp(
-        //locale: locale,
-        supportedLocales: const [Locale('en'), Locale('ar')],
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        routes: {
-          SignUpPage.id: (context) => SignUpPage(),
-          LoginPage.id: (context) => LoginPage(),
-          BookListingPage.id: (context) => BookListingPage(),
-          BookDetailsPage.id: (context) => BookDetailsPage(),
-          FavoriteBooksPage.id: (context) => FavoriteBooksPage(),
-        },
-        debugShowCheckedModeBanner: false,
-        title: 'Book Store',
-        theme: ThemeData(
-          brightness: Brightness.light,
-          fontFamily: 'Montserrat',
-          scaffoldBackgroundColor: kLightBGColor,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          fontFamily: 'Montserrat',
-          scaffoldBackgroundColor: kDarkBGColor,
-        ),
-        themeMode: ThemeMode.system,
-        home: BookListingPage(),
-      ),
+class AppView extends StatelessWidget {
+  const AppView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LocaleBloc, LocaleState>(
+      builder: (context, state) {
+        return MaterialApp(
+          locale: state is LocaleLoaded ? state.locale : null,
+          supportedLocales: const [Locale('en'), Locale('ar')],
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          debugShowCheckedModeBanner: false,
+          title: 'Book Store',
+          theme: ThemeData(
+            brightness: Brightness.light,
+            fontFamily: 'Montserrat',
+            scaffoldBackgroundColor: kLightBGColor,
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            fontFamily: 'Montserrat',
+            scaffoldBackgroundColor: kDarkBGColor,
+          ),
+          themeMode: ThemeMode.system,
+          routes: {
+            SignUpPage.id: (_) => const SignUpPage(),
+            LoginPage.id: (_) => const LoginPage(),
+            BookListingPage.id: (_) => const BookListingPage(),
+            BookDetailsPage.id: (_) => const BookDetailsPage(),
+            FavoriteBooksPage.id: (_) => const FavoriteBooksPage(),
+          },
+          home: const BookListingPage(),
+        );
+      },
     );
   }
 }
