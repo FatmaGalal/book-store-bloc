@@ -28,8 +28,6 @@ class BookStoreApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final locale = ref.watch(localeProvider);
-
     return MultiBlocProvider(
       providers: [
         BlocProvider<LocaleBloc>(create: (context) => LocaleBloc()),
@@ -41,7 +39,7 @@ class BookStoreApp extends StatelessWidget {
       child: BlocBuilder<LocaleBloc, LocaleState>(
         builder: (context, state) {
           return MaterialApp(
-            locale: state is LocaleSwitched ? state.locale : const Locale('en'),
+            locale: state is LocaleLoaded ? state.locale : const Locale('en'),
             supportedLocales: const [Locale('en'), Locale('ar')],
             localizationsDelegates: const [
               AppLocalizations.delegate,
