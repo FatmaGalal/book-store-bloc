@@ -35,6 +35,7 @@ class BookStoreApp extends StatelessWidget {
           create: (_) => FavoritesBloc()..add(LoadFavorites()),
           // TODO: Replacewith getIt after merge
           //create: (_) => getIt.get<FavoritesBloc>()..add(LoadFavorites()),
+          create: (context) => getIt.get<FavoritesBloc>()..add(LoadFavorites()),
         ),
       ],
       child: const AppView(),

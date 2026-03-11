@@ -38,4 +38,24 @@ class HomeRepoImpl extends HomeRepo {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, List<BookEntity>>> loadFavorites() async {
+    try {
+      return right(homeLocalDataSource.loadFavorites());
+    } catch (e) {
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BookEntity>>> toggleFavorite(
+    BookEntity book,
+  ) async {
+    try {
+      return right(await homeLocalDataSource.toggleFavorite(book));
+    } catch (e) {
+      return left(ServerFailure(e.toString()));
+    }
+  }
 }

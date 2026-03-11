@@ -12,18 +12,33 @@ class BooksListingBloc extends Bloc<BooksListingEvent, BooksListingState> {
 
   BooksListingBloc({required this.fetchBookListUseCase})
     : super(BooksListingInitial()) {
-    on<BooksListingEvent>(_onFetchBooksListing);
+    on<FetchBooksListing>(_onFetchBooksListing);
   }
 
   Future<void> _onFetchBooksListing(
-    BooksListingEvent event,
+    FetchBooksListing event,
     Emitter<BooksListingState> emit,
   ) async {
-    if (event is! FetchBooksListing) return;
-    emit(BooksListingLoading());
+    final previousLoadedState = state is BooksListingLoaded
+        ? state as BooksListingLoaded
+        : null;
+
+    if (event.forceRefresh && previousLoadedState != null) {
+      emit(previousLoadedState.copyWith(isRefreshing: true));
+    } else {
+      emit(BooksListingLoading());
+    }
+
     final result = await fetchBookListUseCase(event.forceRefresh);
     result.fold(
-      (failure) => emit(BooksListingFailure(errorMessage: failure.message)),
+      (failure) {
+        if (previousLoadedState != null) {
+          emit(previousLoadedState.copyWith(isRefreshing: false));
+          return;
+        }
+
+        emit(BooksListingFailure(errorMessage: failure.message));
+      },
       (books) => emit(BooksListingLoaded(books: books)),
     );
   }

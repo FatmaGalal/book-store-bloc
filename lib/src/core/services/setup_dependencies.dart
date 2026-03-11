@@ -4,6 +4,9 @@ import 'package:book_store/src/features/home/data/data_sources/home_local_data_s
 import 'package:book_store/src/features/home/data/data_sources/home_remote_data_source.dart';
 import 'package:book_store/src/features/home/data/repos/home_repo_impl.dart';
 import 'package:book_store/src/features/home/domain/use_cases/fetch_book_list_use_case.dart';
+import 'package:book_store/src/features/home/domain/use_cases/load_favorites_use_case.dart';
+import 'package:book_store/src/features/home/domain/use_cases/toggle_favorite_use_case.dart';
+import 'package:book_store/src/features/home/presentation/blocs/favorites_bloc/favorites_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
@@ -52,6 +55,27 @@ void setUpHomeService() {
   if (!getIt.isRegistered<FetchBookListUseCase>()) {
     getIt.registerLazySingleton<FetchBookListUseCase>(
       () => FetchBookListUseCase(homeRepo: getIt.get<HomeRepoImpl>()),
+    );
+  }
+
+  if (!getIt.isRegistered<LoadFavoritesUseCase>()) {
+    getIt.registerLazySingleton<LoadFavoritesUseCase>(
+      () => LoadFavoritesUseCase(homeRepo: getIt.get<HomeRepoImpl>()),
+    );
+  }
+
+  if (!getIt.isRegistered<ToggleFavoriteUseCase>()) {
+    getIt.registerLazySingleton<ToggleFavoriteUseCase>(
+      () => ToggleFavoriteUseCase(homeRepo: getIt.get<HomeRepoImpl>()),
+    );
+  }
+
+  if (!getIt.isRegistered<FavoritesBloc>()) {
+    getIt.registerFactory<FavoritesBloc>(
+      () => FavoritesBloc(
+        loadFavoritesUseCase: getIt.get<LoadFavoritesUseCase>(),
+        toggleFavoriteUseCase: getIt.get<ToggleFavoriteUseCase>(),
+      ),
     );
   }
 }
