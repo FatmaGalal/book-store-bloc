@@ -3,6 +3,8 @@ import 'package:book_store/src/core/blocs/bloc/locale_bloc.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/core/helpers/init_hive.dart';
 import 'package:book_store/src/core/services/setup_dependencies.dart';
+import 'package:book_store/src/features/authentication/presentation/blocs/login_bloc/login_bloc.dart';
+import 'package:book_store/src/features/authentication/presentation/blocs/signup_bloc/signup_bloc.dart';
 import 'package:book_store/src/features/authentication/presentation/pages/signup_page.dart';
 import 'package:book_store/src/features/home/presentation/blocs/favorites_bloc/favorites_bloc.dart';
 import 'package:book_store/src/features/home/presentation/pages/book_details_page.dart';
@@ -76,7 +78,7 @@ class AppView extends StatelessWidget {
             BookDetailsPage.id: (_) => const BookDetailsPage(),
             FavoriteBooksPage.id: (_) => const FavoriteBooksPage(),
           },
-          home: const BookListingPage(),
+          home: const LoginPage(),
         );
       },
     );
