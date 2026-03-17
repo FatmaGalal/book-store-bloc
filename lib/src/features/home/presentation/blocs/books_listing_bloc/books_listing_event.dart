@@ -5,6 +5,6 @@ sealed class BooksListingEvent {}
 
 class FetchBooksListing extends BooksListingEvent {
   final bool forceRefresh;
-
-  FetchBooksListing({this.forceRefresh = false});
+  final int startIndex;
+  FetchBooksListing({this.forceRefresh = false, this.startIndex = 0});
 }

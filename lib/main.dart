@@ -11,6 +11,7 @@ import 'package:book_store/src/features/home/presentation/pages/book_details_pag
 import 'package:book_store/src/features/home/presentation/pages/book_listing_page.dart';
 import 'package:book_store/src/features/home/presentation/pages/favorite_books_page.dart';
 import 'package:book_store/src/features/authentication/presentation/pages/login_page.dart';
+import 'package:book_store/src/features/home/presentation/widgets/book_listing_body.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -78,7 +79,7 @@ class AppView extends StatelessWidget {
             BookDetailsPage.id: (_) => const BookDetailsPage(),
             FavoriteBooksPage.id: (_) => const FavoriteBooksPage(),
           },
-          home: const LoginPage(),
+          home: const BookListingPage(),
         );
       },
     );

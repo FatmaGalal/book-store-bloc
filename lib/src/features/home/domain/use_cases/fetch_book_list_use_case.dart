@@ -10,7 +10,13 @@ class FetchBookListUseCase extends UseCase<List<BookEntity>, bool> {
   FetchBookListUseCase({required this.homeRepo});
 
   @override
-  Future<Either<Failure, List<BookEntity>>> call([bool forceRefresh = false]) {
-    return homeRepo.fetchBookList(forceRefresh: forceRefresh);
+  Future<Either<Failure, List<BookEntity>>> call([
+    bool forceRefresh = false,
+    int startIndex = 0,
+  ]) {
+    return homeRepo.fetchBookList(
+      forceRefresh: forceRefresh,
+      startIndex: startIndex,
+    );
   }
 }

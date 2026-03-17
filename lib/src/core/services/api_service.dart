@@ -6,9 +6,13 @@ class ApiService {
 
   ApiService({required Dio dio}) : _dio = dio;
 
- Future<dynamic> get({required String endPoint}) async {
-    var response = await _dio.get(ApiConstants.baseURL + endPoint);
-
+  Future<dynamic> get({
+    required String endPoint,
+    required int startIndex,
+  }) async {
+    var response = await _dio.get(
+      ApiConstants.baseURL + endPoint + startIndex.toString(),
+    );
     return response.data;
   }
 }

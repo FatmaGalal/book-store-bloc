@@ -17,6 +17,7 @@ class HomeRepoImpl extends HomeRepo {
   @override
   Future<Either<Failure, List<BookEntity>>> fetchBookList({
     bool forceRefresh = false,
+    required int startIndex,
   }) async {
     try {
       if (!forceRefresh) {
@@ -24,7 +25,9 @@ class HomeRepoImpl extends HomeRepo {
         if (cachedBooks.isNotEmpty) return right(cachedBooks);
       }
 
-      List<BookEntity> books = await homeRemoteDataSource.fetchBookList();
+      List<BookEntity> books = await homeRemoteDataSource.fetchBookList(
+        startIndex: startIndex,
+      );
       return right(books);
     } catch (e) {
       final cachedBooks = homeLocalDataSource.fetchBookList();

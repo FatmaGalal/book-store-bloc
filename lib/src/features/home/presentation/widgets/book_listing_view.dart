@@ -1,3 +1,4 @@
+import 'package:book_store/src/core/constants/api_constants.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/features/home/presentation/blocs/books_listing_bloc/books_listing_bloc.dart';
 import 'package:book_store/src/features/home/presentation/widgets/custom_card.dart';
@@ -13,6 +14,33 @@ class BooksListView extends StatefulWidget {
 }
 
 class _BooksListPageState extends State<BooksListView> {
+  final ScrollController _scrollController = ScrollController();
+  int startIndex = 1;
+  @override
+  void initState() {
+    _scrollController.addListener(_scrollListener);
+    super.initState();
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent) {
+      context.read<BooksListingBloc>().add(
+        FetchBooksListing(
+          startIndex: (startIndex * ApiConstants.maxResults),
+          forceRefresh: true,
+        ),
+      );
+      startIndex++;
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BooksListingBloc, BooksListingState>(
@@ -42,6 +70,7 @@ class _BooksListPageState extends State<BooksListView> {
               },
               child: GridView.builder(
                 itemCount: state.books.length,
+                controller: _scrollController,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                 ),

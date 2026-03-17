@@ -29,17 +29,17 @@ class BooksListingBloc extends Bloc<BooksListingEvent, BooksListingState> {
       emit(BooksListingLoading());
     }
 
-    final result = await fetchBookListUseCase(event.forceRefresh);
-    result.fold(
-      (failure) {
-        if (previousLoadedState != null) {
-          emit(previousLoadedState.copyWith(isRefreshing: false));
-          return;
-        }
-
-        emit(BooksListingFailure(errorMessage: failure.message));
-      },
-      (books) => emit(BooksListingLoaded(books: books)),
+    final result = await fetchBookListUseCase(
+      event.forceRefresh,
+      event.startIndex,
     );
+    result.fold((failure) {
+      if (previousLoadedState != null) {
+        emit(previousLoadedState.copyWith(isRefreshing: false));
+        return;
+      }
+
+      emit(BooksListingFailure(errorMessage: failure.message));
+    }, (books) => emit(BooksListingLoaded(books: books)));
   }
 }
