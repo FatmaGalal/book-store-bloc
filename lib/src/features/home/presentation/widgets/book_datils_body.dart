@@ -1,4 +1,5 @@
 import 'package:book_store/l10n/app_localizations.dart';
+import 'package:book_store/src/core/components/safe_network_image.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/core/utils/assets_data.dart';
 import 'package:book_store/src/features/home/domain/entities/book_entity.dart';
@@ -43,9 +44,11 @@ class _BookDatilsBodyState extends State<BookDatilsBody> {
                   width: 90,
                   height: 130,
 
-                  child: book.imageLink != null
-                      ? Image.network(book.imageLink!, fit: BoxFit.cover)
-                      : Image.asset(AssetsData.book),
+                  child: SafeNetworkImage(
+                    imageUrl: book.imageLink,
+                    fallbackAssetPath: AssetsData.book,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
 

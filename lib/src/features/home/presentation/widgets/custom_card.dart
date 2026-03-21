@@ -1,4 +1,6 @@
+import 'package:book_store/src/core/components/safe_network_image.dart';
 import 'package:book_store/src/core/constants/constants.dart';
+import 'package:book_store/src/core/utils/assets_data.dart';
 import 'package:book_store/src/features/home/domain/entities/book_entity.dart';
 import 'package:book_store/src/features/home/presentation/pages/book_details_page.dart';
 import 'package:book_store/src/features/home/presentation/widgets/favorite_icon_widget.dart';
@@ -75,7 +77,12 @@ class CustomCard extends StatelessWidget {
             Positioned(
               left: 70,
               bottom: 100,
-              child: Image.network(book.imageLink ?? '', height: 80, width: 80),
+              child: SafeNetworkImage(
+                imageUrl: book.imageLink,
+                fallbackAssetPath: AssetsData.book,
+                height: 80,
+                width: 80,
+              ),
             ),
           ],
         ),
