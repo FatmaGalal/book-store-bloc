@@ -17,6 +17,10 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
     var response = await apiService.get(
       endPoint: ApiConstants.bookList,
       startIndex: startIndex,
+      queryParameters: {
+        'q': ApiConstants.defaultQuery,
+        'maxResults': ApiConstants.maxResults,
+      },
     );
 
     List<BookEntity> books = [];
@@ -28,7 +32,7 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
     }
 
     books = items.map((bookMap) => BookModel.fromJson(bookMap)).toList();
-    saveAllBooks(books);
+    await saveAllBooks(books, replace: startIndex == 0);
     return books;
   }
 }

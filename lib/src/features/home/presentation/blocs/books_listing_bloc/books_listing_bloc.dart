@@ -33,13 +33,33 @@ class BooksListingBloc extends Bloc<BooksListingEvent, BooksListingState> {
       event.forceRefresh,
       event.startIndex,
     );
-    result.fold((failure) {
-      if (previousLoadedState != null) {
-        emit(previousLoadedState.copyWith(isRefreshing: false));
-        return;
-      }
+    result.fold(
+      (failure) {
+        if (previousLoadedState != null) {
+          emit(previousLoadedState.copyWith(isRefreshing: false));
+          return;
+        }
 
-      emit(BooksListingFailure(errorMessage: failure.message));
-    }, (books) => emit(BooksListingLoaded(books: books)));
+        emit(BooksListingFailure(errorMessage: failure.message));
+      },
+      (books) {
+        final shouldAppend =
+            event.startIndex > 0 && previousLoadedState != null;
+
+        if (!shouldAppend) {
+          emit(BooksListingLoaded(books: books));
+          return;
+        }
+
+        final existingIds = previousLoadedState.books
+            .map((book) => book.bookId)
+            .toSet();
+        final freshBooks = books
+            .where((book) => !existingIds.contains(book.bookId))
+            .toList();
+        final updatedBooks = [...previousLoadedState.books, ...freshBooks];
+        emit(BooksListingLoaded(books: updatedBooks));
+      },
+    );
   }
 }

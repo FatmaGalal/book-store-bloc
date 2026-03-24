@@ -15,7 +15,9 @@ class BooksListView extends StatefulWidget {
 
 class _BooksListPageState extends State<BooksListView> {
   final ScrollController _scrollController = ScrollController();
-  int startIndex = 1;
+  int _nextStartIndex = ApiConstants.maxResults;
+  bool _isLoadingMore = false;
+
   @override
   void initState() {
     _scrollController.addListener(_scrollListener);
@@ -23,16 +25,16 @@ class _BooksListPageState extends State<BooksListView> {
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent) {
-      context.read<BooksListingBloc>().add(
-        FetchBooksListing(
-          startIndex: (startIndex * ApiConstants.maxResults),
-          forceRefresh: true,
-        ),
-      );
-      startIndex++;
-    }
+    if (!_scrollController.hasClients || _isLoadingMore) return;
+
+    final threshold = _scrollController.position.maxScrollExtent - 150;
+    if (_scrollController.position.pixels < threshold) return;
+
+    _isLoadingMore = true;
+    context.read<BooksListingBloc>().add(
+      FetchBooksListing(startIndex: _nextStartIndex, forceRefresh: true),
+    );
+    _nextStartIndex += ApiConstants.maxResults;
   }
 
   @override
@@ -46,10 +48,12 @@ class _BooksListPageState extends State<BooksListView> {
     return BlocBuilder<BooksListingBloc, BooksListingState>(
       builder: (context, state) {
         if (state is BooksListingFailure) {
+          _isLoadingMore = false;
           return Center(child: Text(state.errorMessage));
         }
 
         if (state is BooksListingLoading) {
+          _isLoadingMore = false;
           return ModalProgressHUD(
             inAsyncCall: true,
             progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
@@ -58,12 +62,14 @@ class _BooksListPageState extends State<BooksListView> {
         }
 
         if (state is BooksListingLoaded) {
+          _isLoadingMore = false;
           return ModalProgressHUD(
             inAsyncCall: state.isRefreshing,
             progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
             child: RefreshIndicator(
               color: kPrimaryColor,
               onRefresh: () async {
+                _nextStartIndex = ApiConstants.maxResults;
                 context.read<BooksListingBloc>().add(
                   FetchBooksListing(forceRefresh: true),
                 );
