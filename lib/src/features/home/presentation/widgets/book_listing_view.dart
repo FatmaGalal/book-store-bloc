@@ -1,3 +1,4 @@
+import 'package:book_store/src/core/constants/api_constants.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/features/home/presentation/blocs/books_listing_bloc/books_listing_bloc.dart';
 import 'package:book_store/src/features/home/presentation/widgets/custom_card.dart';
@@ -13,15 +14,46 @@ class BooksListView extends StatefulWidget {
 }
 
 class _BooksListPageState extends State<BooksListView> {
+  final ScrollController _scrollController = ScrollController();
+  int _nextStartIndex = ApiConstants.maxResults;
+  bool _isLoadingMore = false;
+
+  @override
+  void initState() {
+    _scrollController.addListener(_scrollListener);
+    super.initState();
+  }
+
+  void _scrollListener() {
+    if (!_scrollController.hasClients || _isLoadingMore) return;
+
+    final threshold = _scrollController.position.maxScrollExtent - 150;
+    if (_scrollController.position.pixels < threshold) return;
+
+    _isLoadingMore = true;
+    context.read<BooksListingBloc>().add(
+      FetchBooksListing(startIndex: _nextStartIndex, forceRefresh: true),
+    );
+    _nextStartIndex += ApiConstants.maxResults;
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BooksListingBloc, BooksListingState>(
       builder: (context, state) {
         if (state is BooksListingFailure) {
+          _isLoadingMore = false;
           return Center(child: Text(state.errorMessage));
         }
 
         if (state is BooksListingLoading) {
+          _isLoadingMore = false;
           return ModalProgressHUD(
             inAsyncCall: true,
             progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
@@ -30,18 +62,21 @@ class _BooksListPageState extends State<BooksListView> {
         }
 
         if (state is BooksListingLoaded) {
+          _isLoadingMore = false;
           return ModalProgressHUD(
             inAsyncCall: state.isRefreshing,
             progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
             child: RefreshIndicator(
               color: kPrimaryColor,
               onRefresh: () async {
+                _nextStartIndex = ApiConstants.maxResults;
                 context.read<BooksListingBloc>().add(
                   FetchBooksListing(forceRefresh: true),
                 );
               },
               child: GridView.builder(
                 itemCount: state.books.length,
+                controller: _scrollController,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                 ),

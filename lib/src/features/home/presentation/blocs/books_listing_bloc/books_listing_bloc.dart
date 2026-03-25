@@ -29,7 +29,10 @@ class BooksListingBloc extends Bloc<BooksListingEvent, BooksListingState> {
       emit(BooksListingLoading());
     }
 
-    final result = await fetchBookListUseCase(event.forceRefresh);
+    final result = await fetchBookListUseCase(
+      event.forceRefresh,
+      event.startIndex,
+    );
     result.fold(
       (failure) {
         if (previousLoadedState != null) {
@@ -39,7 +42,24 @@ class BooksListingBloc extends Bloc<BooksListingEvent, BooksListingState> {
 
         emit(BooksListingFailure(errorMessage: failure.message));
       },
-      (books) => emit(BooksListingLoaded(books: books)),
+      (books) {
+        final shouldAppend =
+            event.startIndex > 0 && previousLoadedState != null;
+
+        if (!shouldAppend) {
+          emit(BooksListingLoaded(books: books));
+          return;
+        }
+
+        final existingIds = previousLoadedState.books
+            .map((book) => book.bookId)
+            .toSet();
+        final freshBooks = books
+            .where((book) => !existingIds.contains(book.bookId))
+            .toList();
+        final updatedBooks = [...previousLoadedState.books, ...freshBooks];
+        emit(BooksListingLoaded(books: updatedBooks));
+      },
     );
   }
 }
