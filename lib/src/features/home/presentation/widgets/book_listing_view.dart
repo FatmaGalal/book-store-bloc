@@ -63,6 +63,18 @@ class _BooksListPageState extends State<BooksListView> {
 
         if (state is BooksListingLoaded) {
           _isLoadingMore = false;
+          final screenWidth = MediaQuery.sizeOf(context).width;
+          final maxTileWidth = screenWidth >= 1200
+              ? 300.0
+              : screenWidth >= 800
+              ? 260.0
+              : 220.0;
+          final childAspectRatio = screenWidth >= 1200
+              ? 0.98
+              : screenWidth >= 800
+              ? 0.92
+              : 0.86;
+
           return ModalProgressHUD(
             inAsyncCall: state.isRefreshing,
             progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
@@ -75,10 +87,17 @@ class _BooksListPageState extends State<BooksListView> {
                 );
               },
               child: GridView.builder(
+                padding: EdgeInsets.symmetric(
+                  horizontal: screenWidth >= 800 ? 24 : 12,
+                  vertical: 12,
+                ),
                 itemCount: state.books.length,
                 controller: _scrollController,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: maxTileWidth,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: childAspectRatio,
                 ),
                 itemBuilder: (context, index) {
                   final book = state.books[index];
