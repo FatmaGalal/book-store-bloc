@@ -36,9 +36,11 @@ Work in progress — this repository is actively being refactored and improved a
 ## 📱 Screenshots
 
 ### Listing Page
-![Listing](assets/screenshots/listingbooks_phone.png)
-![Listing](assets/screenshots/listingbooks_tablet.png)
+| Mobile | Tablet |
+|--------|--------|
+| ![listing_mobile](assets/screenshots/listing_mobile.png) | ![listing_tablet](assets/screenshots/listing_tablet.png) |
 
 ### Favorites Page
-![Favorites](assets/screenshots/favorites_phone.png)
-![Favorites](assets/screenshots/favorites_tablet.png)
+| Mobile | Tablet |
+|--------|--------|
+| ![favorites_mobile](assets/screenshots/favorites_mobile.png) | ![favorites_tablet](assets/screenshots/favorites_tablet.png) |
