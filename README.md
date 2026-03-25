@@ -31,3 +31,14 @@ The goal is not just to swap libraries, but to understand the architectural and 
 
 📌 Status
 Work in progress — this repository is actively being refactored and improved as part of the learning process.
+
+
+## 📱 Screenshots
+
+### Listing Page
+![Listing](assets/screenshots/listingbooks_phone.png)
+![Listing](assets/screenshots/listingbooks_tablet.png)
+
+### Favorites Page
+![Favorites](assets/screenshots/favorites_phone.png)
+![Favorites](assets/screenshots/favorites_tablet.png)
