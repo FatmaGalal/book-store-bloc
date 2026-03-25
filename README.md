@@ -38,9 +38,9 @@ Work in progress — this repository is actively being refactored and improved a
 ### Listing Page
 | Mobile | Tablet |
 |--------|--------|
-| ![listing_mobile](assets/screenshots/listing_mobile.png) | ![listing_tablet](assets/screenshots/listing_tablet.png) |
+| ![listing_mobile](assets/screenshots/listingbooks_phone.png) | ![listing_tablet](assets/screenshots/listingbooks_tablet.png) |
 
 ### Favorites Page
 | Mobile | Tablet |
 |--------|--------|
-| ![favorites_mobile](assets/screenshots/favorites_mobile.png) | ![favorites_tablet](assets/screenshots/favorites_tablet.png) |
+| ![favorites_mobile](assets/screenshots/favorites_phone.png) | ![favorites_tablet](assets/screenshots/favorites_tablet.png) |
