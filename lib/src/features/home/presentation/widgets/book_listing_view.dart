@@ -1,7 +1,7 @@
-import 'package:book_store/src/core/constants/api_constants.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/features/home/presentation/blocs/books_listing_bloc/books_listing_bloc.dart';
 import 'package:book_store/src/features/home/presentation/widgets/custom_card.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -15,8 +15,6 @@ class BooksListView extends StatefulWidget {
 
 class _BooksListPageState extends State<BooksListView> {
   final ScrollController _scrollController = ScrollController();
-  int _nextStartIndex = ApiConstants.maxResults;
-  bool _isLoadingMore = false;
 
   @override
   void initState() {
@@ -25,16 +23,22 @@ class _BooksListPageState extends State<BooksListView> {
   }
 
   void _scrollListener() {
-    if (!_scrollController.hasClients || _isLoadingMore) return;
+    if (!_scrollController.hasClients) return;
+    final currentState = context.read<BooksListingBloc>().state;
+    if (currentState is! BooksListingLoaded) return;
+    if (currentState.hasReachedMax || currentState.isLoadingMore) {
+      return;
+    }
 
     final threshold = _scrollController.position.maxScrollExtent - 150;
     if (_scrollController.position.pixels < threshold) return;
 
-    _isLoadingMore = true;
     context.read<BooksListingBloc>().add(
-      FetchBooksListing(startIndex: _nextStartIndex, forceRefresh: true),
+      FetchBooksListing(
+        startIndex: currentState.books.length,
+        forceRefresh: true,
+      ),
     );
-    _nextStartIndex += ApiConstants.maxResults;
   }
 
   @override
@@ -45,15 +49,22 @@ class _BooksListPageState extends State<BooksListView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BooksListingBloc, BooksListingState>(
+    return BlocConsumer<BooksListingBloc, BooksListingState>(
+      listener: (context, state) {
+        if (state is BooksListingLoaded &&
+            state.loadMoreErrorMessage != null &&
+            state.loadMoreErrorMessage!.isNotEmpty) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.loadMoreErrorMessage!)));
+        }
+      },
       builder: (context, state) {
         if (state is BooksListingFailure) {
-          _isLoadingMore = false;
           return Center(child: Text(state.errorMessage));
         }
 
         if (state is BooksListingLoading) {
-          _isLoadingMore = false;
           return ModalProgressHUD(
             inAsyncCall: true,
             progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
@@ -62,17 +73,17 @@ class _BooksListPageState extends State<BooksListView> {
         }
 
         if (state is BooksListingLoaded) {
-          _isLoadingMore = false;
           return ModalProgressHUD(
-            inAsyncCall: state.isRefreshing,
+            inAsyncCall: state.isRefreshing || state.isLoadingMore,
             progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
             child: RefreshIndicator(
               color: kPrimaryColor,
               onRefresh: () async {
-                _nextStartIndex = ApiConstants.maxResults;
+                final completer = Completer<void>();
                 context.read<BooksListingBloc>().add(
-                  FetchBooksListing(forceRefresh: true),
+                  FetchBooksListing(forceRefresh: true, completer: completer),
                 );
+                await completer.future;
               },
               child: GridView.builder(
                 itemCount: state.books.length,

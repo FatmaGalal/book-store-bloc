@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:book_store/src/core/constants/api_constants.dart';
 import 'package:book_store/src/features/home/domain/entities/book_entity.dart';
 import 'package:book_store/src/features/home/domain/use_cases/fetch_book_list_use_case.dart';
 import 'package:flutter/material.dart';
@@ -23,43 +24,86 @@ class BooksListingBloc extends Bloc<BooksListingEvent, BooksListingState> {
         ? state as BooksListingLoaded
         : null;
 
-    if (event.forceRefresh && previousLoadedState != null) {
-      emit(previousLoadedState.copyWith(isRefreshing: true));
-    } else {
-      emit(BooksListingLoading());
+    try {
+      if (event.isLoadMore && previousLoadedState != null) {
+        if (previousLoadedState.isLoadingMore ||
+            previousLoadedState.hasReachedMax) {
+          return;
+        }
+
+        emit(
+          previousLoadedState.copyWith(
+            isLoadingMore: true,
+            clearLoadMoreError: true,
+          ),
+        );
+      } else if (event.isRefresh && previousLoadedState != null) {
+        emit(
+          previousLoadedState.copyWith(
+            isRefreshing: true,
+            hasReachedMax: false,
+            clearLoadMoreError: true,
+          ),
+        );
+      } else {
+        emit(BooksListingLoading());
+      }
+
+      final result = await fetchBookListUseCase(
+        event.forceRefresh,
+        event.startIndex,
+      );
+      result.fold(
+        (failure) {
+          if (previousLoadedState != null) {
+            emit(
+              previousLoadedState.copyWith(
+                isRefreshing: false,
+                isLoadingMore: false,
+                loadMoreErrorMessage: event.isLoadMore ? failure.message : null,
+                clearLoadMoreError: !event.isLoadMore,
+              ),
+            );
+            return;
+          }
+
+          emit(BooksListingFailure(errorMessage: failure.message));
+        },
+        (books) {
+          final reachedMaxForPage =
+              books.isEmpty || books.length < ApiConstants.maxResults;
+
+          if (!event.isLoadMore || previousLoadedState == null) {
+            emit(
+              BooksListingLoaded(
+                books: books,
+                hasReachedMax: reachedMaxForPage,
+              ),
+            );
+            return;
+          }
+
+          final existingIds = previousLoadedState.books
+              .map((book) => book.bookId)
+              .toSet();
+          final newBooks = books
+              .where((book) => !existingIds.contains(book.bookId))
+              .toList();
+          emit(
+            previousLoadedState.copyWith(
+              books: [...previousLoadedState.books, ...newBooks],
+              isLoadingMore: false,
+              hasReachedMax:
+                  previousLoadedState.hasReachedMax || reachedMaxForPage,
+              clearLoadMoreError: true,
+            ),
+          );
+        },
+      );
+    } finally {
+      if (event.completer?.isCompleted == false) {
+        event.completer?.complete();
+      }
     }
-
-    final result = await fetchBookListUseCase(
-      event.forceRefresh,
-      event.startIndex,
-    );
-    result.fold(
-      (failure) {
-        if (previousLoadedState != null) {
-          emit(previousLoadedState.copyWith(isRefreshing: false));
-          return;
-        }
-
-        emit(BooksListingFailure(errorMessage: failure.message));
-      },
-      (books) {
-        final shouldAppend =
-            event.startIndex > 0 && previousLoadedState != null;
-
-        if (!shouldAppend) {
-          emit(BooksListingLoaded(books: books));
-          return;
-        }
-
-        final existingIds = previousLoadedState.books
-            .map((book) => book.bookId)
-            .toSet();
-        final freshBooks = books
-            .where((book) => !existingIds.contains(book.bookId))
-            .toList();
-        final updatedBooks = [...previousLoadedState.books, ...freshBooks];
-        emit(BooksListingLoaded(books: updatedBooks));
-      },
-    );
   }
 }
