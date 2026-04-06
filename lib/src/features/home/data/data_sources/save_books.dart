@@ -10,7 +10,9 @@ Future<void> saveAllBooks(
   if (replace) {
     await box.clear();
   }
-  await box.addAll(books);
+  for (final book in books) {
+    await box.put(book.bookId, book);
+  }
 }
 
 Future<void> saveBook(BookEntity book) async {

@@ -32,10 +32,15 @@ class HomeRepoImpl extends HomeRepo {
     } catch (e) {
       final cachedBooks = homeLocalDataSource.fetchBookList();
 
-      if (cachedBooks.isNotEmpty) {
+      if (startIndex == 0 && cachedBooks.isNotEmpty) {
         return right(cachedBooks);
       } else if (e is DioException) {
         return left(ServerFailure.fromDioError(e));
+      }
+      if (startIndex > 0 && cachedBooks.isNotEmpty) {
+        return left(
+          ServerFailure("Failed to load more books: ${e.toString()}"),
+        );
       }
 
       return Left(ServerFailure(e.toString()));
