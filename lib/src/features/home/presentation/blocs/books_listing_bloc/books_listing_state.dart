@@ -1,5 +1,7 @@
 part of 'books_listing_bloc.dart';
 
+//const _noLoadMoreErrorUpdate = Object();
+
 @immutable
 sealed class BooksListingState {}
 
@@ -18,14 +20,14 @@ final class BooksListingLoaded extends BooksListingState {
   final bool isRefreshing;
   final bool hasReachedMax;
   final bool isLoadingMore;
-  // final String? loadMoreErrorMessage;
+  final String? loadMoreErrorMessage;
 
   BooksListingLoaded({
     required this.books,
     this.isRefreshing = false,
     this.hasReachedMax = false,
     this.isLoadingMore = false,
-    // this.loadMoreErrorMessage
+    this.loadMoreErrorMessage,
   });
 
   BooksListingLoaded copyWith({
@@ -33,14 +35,17 @@ final class BooksListingLoaded extends BooksListingState {
     bool? isRefreshing,
     bool? hasReachedMax,
     bool? isLoadingMore,
-    // String? loadMoreErrorMessage,
+    String? loadMoreErrorMessage,
+    bool clearLoadMoreError = false,
   }) {
     return BooksListingLoaded(
       books: books ?? this.books,
       isRefreshing: isRefreshing ?? this.isRefreshing,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      // loadMoreErrorMessage: loadMoreErrorMessage ?? this.loadMoreErrorMessage,
+      loadMoreErrorMessage: clearLoadMoreError
+          ? null
+          : loadMoreErrorMessage ?? this.loadMoreErrorMessage,
     );
   }
 }

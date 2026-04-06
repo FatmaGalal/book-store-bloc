@@ -53,10 +53,25 @@ class _BooksListPageState extends State<BooksListView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BooksListingBloc, BooksListingState>(
+    return BlocConsumer<BooksListingBloc, BooksListingState>(
+      listener: (context, state) {
+        if (state is! BooksListingLoaded ||
+            state.loadMoreErrorMessage == null ||
+            state.loadMoreErrorMessage!.isEmpty) {
+          return;
+        }
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(state.loadMoreErrorMessage!)));
+      },
       builder: (context, state) {
         if (state is BooksListingFailure) {
           return Center(child: Text(state.errorMessage));
+        }
+
+        if (state is BookListingEmpty) {
+          return Center(child: Text(state.message));
         }
 
         if (state is BooksListingLoading) {
@@ -71,43 +86,56 @@ class _BooksListPageState extends State<BooksListView> {
           return ModalProgressHUD(
             inAsyncCall: state.isRefreshing,
             progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
-            child: RefreshIndicator(
-              color: kPrimaryColor,
-              onRefresh: () async {
-                final completer = Completer();
-                StreamSubscription? subscription;
+            child: Stack(
+              children: [
+                RefreshIndicator(
+                  color: kPrimaryColor,
+                  onRefresh: () async {
+                    final completer = Completer();
+                    StreamSubscription? subscription;
 
-                subscription = context.read<BooksListingBloc>().stream.listen((
-                  state,
-                ) {
-                  if (state is BooksListingLoaded && !state.isRefreshing) {
-                    completer.complete();
-                    subscription?.cancel();
-                  }
-                  if (state is BooksListingFailure) {
-                    completer.complete();
-                    subscription?.cancel();
-                  }
-                });
+                    subscription = context
+                        .read<BooksListingBloc>()
+                        .stream
+                        .listen((state) {
+                          if (state is BooksListingLoaded &&
+                              !state.isRefreshing) {
+                            completer.complete();
+                            subscription?.cancel();
+                          }
+                          if (state is BooksListingFailure) {
+                            completer.complete();
+                            subscription?.cancel();
+                          }
+                        });
 
-                context.read<BooksListingBloc>().add(
-                  FetchBooksListing(forceRefresh: true, startIndex: 0),
-                );
+                    context.read<BooksListingBloc>().add(
+                      FetchBooksListing(forceRefresh: true, startIndex: 0),
+                    );
 
-                return completer.future;
-              },
-              child: GridView.builder(
-                itemCount: state.books.length,
-                controller: _scrollController,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                    return completer.future;
+                  },
+                  child: GridView.builder(
+                    itemCount: state.books.length,
+                    controller: _scrollController,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    itemBuilder: (context, index) {
+                      final book = state.books[index];
+
+                      return CustomCard(book: book);
+                    },
+                  ),
                 ),
-                itemBuilder: (context, index) {
-                  final book = state.books[index];
-
-                  return CustomCard(book: book);
-                },
-              ),
+                if (state.isLoadingMore)
+                  const Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 16,
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+              ],
             ),
           );
         }

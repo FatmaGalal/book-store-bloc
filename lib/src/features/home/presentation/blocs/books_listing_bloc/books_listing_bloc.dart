@@ -23,10 +23,21 @@ class BooksListingBloc extends Bloc<BooksListingEvent, BooksListingState> {
         ? state as BooksListingLoaded
         : null;
 
-    if (event.forceRefresh && previousLoadedState != null) {
-      emit(previousLoadedState.copyWith(isRefreshing: true));
-    } else if (event.isLoadingMore && previousLoadedState != null) {
-      emit(previousLoadedState.copyWith(isLoadingMore: true));
+    if (event.isLoadingMore && previousLoadedState != null) {
+      emit(
+        previousLoadedState.copyWith(
+          isLoadingMore: true,
+          loadMoreErrorMessage: null,
+        ),
+      );
+    } else if (event.isRefreshing && previousLoadedState != null) {
+      emit(
+        previousLoadedState.copyWith(
+          isRefreshing: true,
+          hasReachedMax: false,
+          loadMoreErrorMessage: null,
+        ),
+      );
     } else {
       emit(BooksListingLoading());
     }
@@ -37,13 +48,18 @@ class BooksListingBloc extends Bloc<BooksListingEvent, BooksListingState> {
     );
     result.fold(
       (failure) {
-        if (previousLoadedState != null) {
+        if (previousLoadedState != null && event.isLoadingMore) {
           emit(
             previousLoadedState.copyWith(
-              isRefreshing: false,
               isLoadingMore: false,
+              loadMoreErrorMessage: failure.message,
             ),
           );
+          return;
+        }
+
+        if (previousLoadedState != null) {
+          emit(previousLoadedState.copyWith(isRefreshing: false));
           return;
         }
 
@@ -54,7 +70,9 @@ class BooksListingBloc extends Bloc<BooksListingEvent, BooksListingState> {
           emit(
             previousLoadedState.copyWith(
               isRefreshing: false,
+              isLoadingMore: false,
               hasReachedMax: true,
+              loadMoreErrorMessage: null,
             ),
           );
           return;
