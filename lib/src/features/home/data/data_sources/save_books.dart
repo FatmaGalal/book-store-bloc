@@ -2,12 +2,20 @@ import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/features/home/domain/entities/book_entity.dart';
 import 'package:hive/hive.dart';
 
-void saveAllBooks(List<BookEntity> books) {
+Future<void> saveAllBooks(
+  List<BookEntity> books, {
+  bool replace = false,
+}) async {
   var box = Hive.box<BookEntity>(kBookBox);
-  box.addAll(books);
+  if (replace) {
+    await box.clear();
+  }
+  for (final book in books) {
+    await box.put(book.bookId, book);
+  }
 }
 
-void saveBook(BookEntity book) {
+Future<void> saveBook(BookEntity book) async {
   var box = Hive.box<BookEntity>(kBookBox);
-  box.add(book);
+  await box.add(book);
 }

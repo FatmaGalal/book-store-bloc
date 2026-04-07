@@ -1,4 +1,5 @@
 import 'package:book_store/l10n/app_localizations.dart';
+import 'package:book_store/src/core/components/safe_network_image.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/core/utils/assets_data.dart';
 import 'package:book_store/src/features/home/domain/entities/book_entity.dart';
@@ -6,14 +7,14 @@ import 'package:book_store/src/features/home/presentation/widgets/book_details_i
 import 'package:book_store/src/features/home/presentation/widgets/favorite_icon_widget.dart';
 import 'package:flutter/material.dart';
 
-class BookDatilsBody extends StatefulWidget {
-  const BookDatilsBody({super.key});
+class BookDetailsBody extends StatefulWidget {
+  const BookDetailsBody({super.key});
 
   @override
-  State<BookDatilsBody> createState() => _BookDatilsBodyState();
+  State<BookDetailsBody> createState() => _BookDetailsBodyState();
 }
 
-class _BookDatilsBodyState extends State<BookDatilsBody> {
+class _BookDetailsBodyState extends State<BookDetailsBody> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -43,9 +44,11 @@ class _BookDatilsBodyState extends State<BookDatilsBody> {
                   width: 90,
                   height: 130,
 
-                  child: book.imageLink != null
-                      ? Image.network(book.imageLink!, fit: BoxFit.cover)
-                      : Image.asset(AssetsData.book),
+                  child: SafeNetworkImage(
+                    imageUrl: book.imageLink,
+                    fallbackAssetPath: AssetsData.book,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
 
@@ -62,7 +65,7 @@ class _BookDatilsBodyState extends State<BookDatilsBody> {
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color:colorScheme.onSurface,
+                        color: colorScheme.onSurface,
                       ),
                     ),
 
@@ -141,7 +144,7 @@ class _BookDatilsBodyState extends State<BookDatilsBody> {
 
           const SizedBox(height: 12),
 
-          Text( '${t.bookId}: ${book.bookId}'),
+          Text('${t.bookId}: ${book.bookId}'),
         ],
       ),
     );

@@ -17,6 +17,7 @@ class HomeRepoImpl extends HomeRepo {
   @override
   Future<Either<Failure, List<BookEntity>>> fetchBookList({
     bool forceRefresh = false,
+    required int startIndex,
   }) async {
     try {
       if (!forceRefresh) {
@@ -24,15 +25,22 @@ class HomeRepoImpl extends HomeRepo {
         if (cachedBooks.isNotEmpty) return right(cachedBooks);
       }
 
-      List<BookEntity> books = await homeRemoteDataSource.fetchBookList();
+      List<BookEntity> books = await homeRemoteDataSource.fetchBookList(
+        startIndex: startIndex,
+      );
       return right(books);
     } catch (e) {
       final cachedBooks = homeLocalDataSource.fetchBookList();
 
-      if (cachedBooks.isNotEmpty) {
+      if (startIndex == 0 && cachedBooks.isNotEmpty) {
         return right(cachedBooks);
       } else if (e is DioException) {
         return left(ServerFailure.fromDioError(e));
+      }
+      if (startIndex > 0 && cachedBooks.isNotEmpty) {
+        return left(
+          ServerFailure("Failed to load more books: ${e.toString()}"),
+        );
       }
 
       return Left(ServerFailure(e.toString()));

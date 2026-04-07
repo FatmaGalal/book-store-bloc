@@ -3,7 +3,7 @@ import 'package:book_store/src/core/components/custom_app_bar.dart';
 import 'package:book_store/src/core/constants/route_constants.dart';
 import 'package:book_store/src/features/home/presentation/pages/book_listing_page.dart';
 import 'package:book_store/src/features/home/presentation/pages/favorite_books_page.dart';
-import 'package:book_store/src/features/home/presentation/widgets/book_datils_body.dart';
+import 'package:book_store/src/features/home/presentation/widgets/book_details_body.dart';
 import 'package:flutter/material.dart';
 
 class BookDetailsPage extends StatelessWidget {
@@ -30,7 +30,7 @@ class BookDetailsPage extends StatelessWidget {
                 },
               ),
 
-              Expanded(child: BookDatilsBody()),
+              Expanded(child: BookDetailsBody()),
             ],
           ),
         ),

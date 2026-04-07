@@ -34,12 +34,17 @@ class BookModel extends BookEntity {
          categories: (volumeInfo?.categories?.isNotEmpty ?? false)
              ? volumeInfo!.categories!.first
              : '',
-         imageLink: volumeInfo?.imageLinks?.smallThumbnail ?? '',
-         imageLinkLarg: volumeInfo?.imageLinks?.medium ?? '',
+         imageLink: _normalizeImageUrl(volumeInfo?.imageLinks?.smallThumbnail),
+         imageLinkLarg: _normalizeImageUrl(volumeInfo?.imageLinks?.medium),
          publisher: volumeInfo?.publisher??'',
          publishedDate: volumeInfo?.publishedDate??'',
          language: volumeInfo?.language??'',
        );
+
+  static String? _normalizeImageUrl(String? url) {
+    if (url == null || url.trim().isEmpty) return null;
+    return url.replaceFirst('http://', 'https://');
+  }
 
   factory BookModel.fromJson(Map<String, dynamic> json) {
     return BookModel(

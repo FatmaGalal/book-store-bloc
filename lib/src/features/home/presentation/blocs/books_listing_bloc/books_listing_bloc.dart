@@ -23,15 +23,41 @@ class BooksListingBloc extends Bloc<BooksListingEvent, BooksListingState> {
         ? state as BooksListingLoaded
         : null;
 
-    if (event.forceRefresh && previousLoadedState != null) {
-      emit(previousLoadedState.copyWith(isRefreshing: true));
+    if (event.isLoadingMore && previousLoadedState != null) {
+      emit(
+        previousLoadedState.copyWith(
+          isLoadingMore: true,
+          loadMoreErrorMessage: null,
+        ),
+      );
+    } else if (event.isRefreshing && previousLoadedState != null) {
+      emit(
+        previousLoadedState.copyWith(
+          isRefreshing: true,
+          hasReachedMax: false,
+          loadMoreErrorMessage: null,
+        ),
+      );
     } else {
       emit(BooksListingLoading());
     }
 
-    final result = await fetchBookListUseCase(event.forceRefresh);
+    final result = await fetchBookListUseCase(
+      event.forceRefresh,
+      event.startIndex,
+    );
     result.fold(
       (failure) {
+        if (previousLoadedState != null && event.isLoadingMore) {
+          emit(
+            previousLoadedState.copyWith(
+              isLoadingMore: false,
+              loadMoreErrorMessage: failure.message,
+            ),
+          );
+          return;
+        }
+
         if (previousLoadedState != null) {
           emit(previousLoadedState.copyWith(isRefreshing: false));
           return;
@@ -39,7 +65,40 @@ class BooksListingBloc extends Bloc<BooksListingEvent, BooksListingState> {
 
         emit(BooksListingFailure(errorMessage: failure.message));
       },
-      (books) => emit(BooksListingLoaded(books: books)),
+      (books) {
+        if (books.isEmpty && previousLoadedState != null) {
+          emit(
+            previousLoadedState.copyWith(
+              isRefreshing: false,
+              isLoadingMore: false,
+              hasReachedMax: true,
+              loadMoreErrorMessage: null,
+            ),
+          );
+          return;
+        }
+        if (books.isEmpty && previousLoadedState == null) {
+          emit(BookListingEmpty(message: "No books found."));
+          return;
+        }
+
+        final shouldAppend =
+            event.startIndex > 0 && previousLoadedState != null;
+
+        if (!shouldAppend) {
+          emit(BooksListingLoaded(books: books));
+          return;
+        }
+
+        final existingIds = previousLoadedState.books
+            .map((book) => book.bookId)
+            .toSet();
+        final freshBooks = books
+            .where((book) => !existingIds.contains(book.bookId))
+            .toList();
+        final updatedBooks = [...previousLoadedState.books, ...freshBooks];
+        emit(BooksListingLoaded(books: updatedBooks, isLoadingMore: false));
+      },
     );
   }
 }
