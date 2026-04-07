@@ -96,6 +96,18 @@ class _BooksListPageState extends State<BooksListView> {
               ? 0.92
               : 0.86;
 
+          final screenWidth = MediaQuery.sizeOf(context).width;
+          final maxTileWidth = screenWidth >= 1200
+              ? 300.0
+              : screenWidth >= 800
+              ? 260.0
+              : 220.0;
+          final childAspectRatio = screenWidth >= 1200
+              ? 0.98
+              : screenWidth >= 800
+              ? 0.92
+              : 0.86;
+
           return ModalProgressHUD(
             inAsyncCall: state.isRefreshing,
             progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
