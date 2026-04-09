@@ -1,6 +1,7 @@
 import 'package:book_store/src/core/components/safe_network_image.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/core/utils/assets_data.dart';
+import 'package:book_store/src/core/utils/responsive_scale.dart';
 import 'package:book_store/src/features/home/domain/entities/book_entity.dart';
 import 'package:book_store/src/features/home/presentation/pages/book_details_page.dart';
 import 'package:book_store/src/features/home/presentation/widgets/favorite_icon_widget.dart';
@@ -17,6 +18,9 @@ class CustomCard extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
     final screenWidth = MediaQuery.sizeOf(context).width;
+    double scaleFactor = getScalingFactor(
+      context,
+    ); // Ensure scaling factor is calculated f
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, BookDetailsPage.id, arguments: book);
@@ -37,12 +41,12 @@ class CustomCard extends StatelessWidget {
           margin: EdgeInsets.zero,
           color: isDark ? kDarkBGColor : kLightBGColor,
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12 * scaleFactor),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final imageSize = (constraints.maxHeight * 0.4).clamp(
-                  70.0,
-                  140.0,
+                  60.0,
+                  100.0,
                 );
 
                 return Column(
@@ -57,7 +61,7 @@ class CustomCard extends StatelessWidget {
                         fit: BoxFit.fill,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12 * scaleFactor),
                     Text(
                       book.title ?? '',
                       maxLines: screenWidth >= 800 ? 3 : 2,
