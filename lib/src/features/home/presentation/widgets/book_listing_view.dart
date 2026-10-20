@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:book_store/src/core/constants/constants.dart';
+import 'package:book_store/src/core/utils/responsive_scale.dart';
 import 'package:book_store/src/features/home/presentation/blocs/books_listing_bloc/books_listing_bloc.dart';
 import 'package:book_store/src/features/home/presentation/widgets/custom_card.dart';
 import 'package:flutter/material.dart';
@@ -81,8 +82,22 @@ class _BooksListPageState extends State<BooksListView> {
             child: Container(),
           );
         }
+        double scaleFactor = getScalingFactor(context);
 
         if (state is BooksListingLoaded) {
+          final screenWidth = MediaQuery.sizeOf(context).width;
+          //final maxTileWidth = baseTileWidth * scaleFactor;
+          final maxTileWidth = screenWidth >= 1200
+              ? 300.0
+              : screenWidth >= 800
+              ? 260.0
+              : 220.0;
+          final childAspectRatio = screenWidth >= 1200
+              ? 0.98
+              : screenWidth >= 800
+              ? 0.78
+              : 0.89;
+
           return ModalProgressHUD(
             inAsyncCall: state.isRefreshing,
             progressIndicator: CircularProgressIndicator(color: kPrimaryColor),
@@ -116,10 +131,17 @@ class _BooksListPageState extends State<BooksListView> {
                     return completer.future;
                   },
                   child: GridView.builder(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12 * scaleFactor,
+                      vertical: 12,
+                    ),
                     itemCount: state.books.length,
                     controller: _scrollController,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: maxTileWidth,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio: childAspectRatio,
                     ),
                     itemBuilder: (context, index) {
                       final book = state.books[index];

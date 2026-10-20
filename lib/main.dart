@@ -3,6 +3,7 @@ import 'package:book_store/src/core/blocs/bloc/locale_bloc.dart';
 import 'package:book_store/src/core/constants/constants.dart';
 import 'package:book_store/src/core/helpers/init_hive.dart';
 import 'package:book_store/src/core/services/setup_dependencies.dart';
+import 'package:book_store/src/core/utils/responsive_scale.dart';
 import 'package:book_store/src/features/authentication/presentation/pages/signup_page.dart';
 import 'package:book_store/src/features/home/presentation/blocs/favorites_bloc/favorites_bloc.dart';
 import 'package:book_store/src/features/home/presentation/pages/book_details_page.dart';
@@ -62,6 +63,23 @@ class AppView extends StatelessWidget {
             brightness: Brightness.light,
             fontFamily: 'Montserrat',
             scaffoldBackgroundColor: kLightBGColor,
+
+            textTheme: TextTheme(
+              bodyMedium: TextStyle(
+                fontSize:
+                    12 *
+                    getScalingFactor(
+                      context,
+                    ), // Scale font size based on screen width
+              ),
+              bodyLarge: TextStyle(
+                fontSize:
+                    14 *
+                    getScalingFactor(
+                      context,
+                    ), // Scale font size based on screen width
+              ),
+            ),
           ),
           darkTheme: ThemeData(
             brightness: Brightness.dark,
